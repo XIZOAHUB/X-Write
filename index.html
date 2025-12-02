@@ -1,450 +1,162 @@
-<!doctype html>
-<html lang="hi">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Xizoa Docs — MS Word style Assignment Editor (Gemini Improved)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
-  <style>
-    :root{
-      --bg:#071026; --card:#0b1630; --muted:#9aa7bf; --accent:#00e0ff; --accent-2:#7c3aed; --glass:rgba(255,255,255,0.04);
-      --paper-bg: #ffffff;
-      --paper-size-w: 794px; /* A4 portrait px @ 96dpi ~ 794x1123 */
-      --paper-size-h: 1123px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%;margin:0;font-family:Inter,system-ui,Segoe UI,Roboto,-apple-system; background:linear-gradient(180deg,#061026 0%, #041226 60%); color:#e6eef8}
-    .app{max-width:1300px;margin:20px auto;padding:18px}
-    header{display:flex;align-items:center;gap:12px}
-    .logo{width:52px;height:52px;border-radius:10px;display:grid;place-items:center;background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:0 10px 30px rgba(124,58,237,0.18)}
-    .logo strong{font-size:20px;color:#02122a}
-    .title{display:flex;flex-direction:column}
-    .title h1{margin:0;font-size:18px}
-    .title p{margin:0;color:var(--muted);font-size:13px}
-    .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;align-items:center}
-    .group{background:var(--card);padding:8px;border-radius:10px;display:flex;gap:6px;align-items:center;border:1px solid rgba(255,255,255,0.03)}
-    .btn{background:transparent;border:0;padding:8px 10px;border-radius:8px;color:var(--muted);cursor:pointer;font-weight:700}
-    .btn.primary{background:linear-gradient(90deg,var(--accent),var(--accent-2));color:#02122a}
-    select,input[type=color],input[type=file]{background:transparent;color:inherit;border-radius:8px;padding:6px;border:1px solid rgba(255,255,255,0.04)}
-    input[type=text]{padding:6px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:var(--muted)}
-    .editor-wrap{display:flex;gap:14px;margin-top:16px}
-    .sidebar{width:260px}
-    .card{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:12px;padding:12px;box-shadow:0 8px 30px rgba(2,6,23,0.6);border:1px solid rgba(255,255,255,0.03)}
-    .canvas-area{flex:1;display:flex;flex-direction:column;gap:12px}
-    .page{width:var(--paper-size-w);min-height:420px;max-height:var(--paper-size-h);background:var(--paper-bg);border-radius:8px;padding:28px;margin:0 auto;position:relative;color:#0b1220;box-shadow:0 16px 40px rgba(2,6,23,0.35)}
-    .page[contenteditable="true"]{outline:none}
-    .page-toolbar{display:flex;gap:8px;justify-content:center;margin-bottom:8px}
-    .page-meta{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:6px}
-    .muted{color:var(--muted);font-size:13px}
-    .note{font-size:13px;color:var(--muted);margin-top:8px}
-    .pages-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
-    .page-thumb{background:rgba(255,255,255,0.02);padding:8px;border-radius:8px;cursor:pointer;border:1px solid rgba(255,255,255,0.03)}
-    .controls{display:flex;gap:8px;align-items:center;margin-top:10px}
-    .right-actions{display:flex;gap:8px;align-items:center}
-    textarea{width:100%;min-height:80px;border-radius:8px;padding:8px;border:1px solid rgba(255,255,255,0.03);background:transparent;color:var(--muted)}
-    .footer-note{color:var(--muted);font-size:13px;margin-top:10px}
-    .hidden{display:none}
-    /* responsive */
-    @media(max-width:1100px){
-      .editor-wrap{flex-direction:column}
-      .sidebar{width:100%}
-      .page{width:100%}
-    }
-  </style>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Xizoa Docs — Premium</title>
+
+<style>
+/* ---------- ROOT THEME ---------- */
+:root {
+  --bg: #0d1117;
+  --card: #161b22;
+  --accent1: #3a8bff;
+  --accent2: #8a5bff;
+  --text: #e6e6e6;
+  --paper: #ffffff;
+  --border: #2b2f36;
+  --radius: 18px;
+  --transition: 0.2s;
+  font-family: "Inter", sans-serif;
+}
+
+/* ----------- GLOBAL ---------- */
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+/* ----------- HEADER ---------- */
+.header {
+  width: 100%;
+  padding: 12px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.06);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--accent1), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* ----------- TOOLBAR (Ribbon) ---------- */
+.toolbar {
+  background: var(--card);
+  padding: 12px;
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+}
+
+.toolbar button, select {
+  padding: 8px 12px;
+  border-radius: var(--radius);
+  border: 1px solid var(--border);
+  background: #1d222a;
+  color: var(--text);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.toolbar button:hover, select:hover {
+  background: #252b34;
+}
+
+/* ----------- EDITOR AREA ---------- */
+.editor-container {
+  flex: 1;
+  overflow-y: auto;
+  padding: 20px;
+}
+
+.paper {
+  background: var(--paper);
+  width: 90%;
+  max-width: 900px;
+  min-height: 1200px;
+  margin: auto;
+  padding: 40px;
+  border-radius: 8px;
+  color: #000;
+  box-shadow: 0 0 20px rgba(0,0,0,0.3);
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+  .paper {
+    width: 100%;
+    padding: 20px;
+  }
+}
+</style>
 </head>
+
 <body>
-  <div class="app">
-    <header>
-      <div class="logo"><strong>X</strong></div>
-      <div class="title">
-        <h1>Xizoa Docs (Gemini Improved)</h1>
-        <p class="muted">MS Word–style online editor — write assignments, add images, export PDF</p>
-      </div>
-      <div style="margin-left:auto" class="muted">Saved: <span id="savedStatus">not saved</span></div>
-    </header>
 
-    <div class="toolbar" id="globalToolbar">
-      <div class="group">
-        <button class="btn" onclick="exec('undo')" title="Undo (Ctrl+Z)">↺</button>
-        <button class="btn" onclick="exec('redo')" title="Redo (Ctrl+Y)">↻</button>
-      </div>
+<!-- HEADER -->
+<div class="header">
+  <div class="logo">Xizoa Docs</div>
+  <div style="opacity:0.7;font-size:14px;">Saved • Ready</div>
+</div>
 
-      <div class="group">
-        <button class="btn" onclick="exec('bold')" title="Bold (Ctrl+B)"><b>B</b></button>
-        <button class="btn" onclick="exec('italic')" title="Italic (Ctrl+I)"><i>I</i></button>
-        <button class="btn" onclick="exec('underline')" title="Underline (Ctrl+U)"><u>U</u></button>
-        <button class="btn" onclick="exec('strikeThrough')" title="Strikethrough">S̶</button>
-      </div>
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <button onclick="cmd('bold')"><b>B</b></button>
+  <button onclick="cmd('italic')"><i>I</i></button>
+  <button onclick="cmd('underline')"><u>U</u></button>
 
-      <div class="group">
-        <select id="fontName" onchange="exec('fontName', this.value)">
-          <option value="Inter">Inter</option>
-          <option value="Arial">Arial</option>
-          <option value="Times New Roman">Times New Roman</option>
-          <option value="Georgia">Georgia</option>
-          <option value="Courier New">Courier New</option>
-        </select>
-        <select id="fontSize" onchange="exec('fontSize', this.value)">
-          <option value="3">12px</option>
-          <option value="4">14px</option>
-          <option value="5">18px</option>
-          <option value="6">22px</option>
-          <option value="7">26px</option>
-        </select>
-      </div>
+  <select onchange="cmdValue('fontSize', this.value)">
+    <option value="3">12px</option>
+    <option value="4">14px</option>
+    <option value="5">18px</option>
+    <option value="6">24px</option>
+  </select>
 
-      <div class="group">
-        <input type="color" id="foreColor" title="Text color" onchange="exec('foreColor', this.value)">
-        <input type="color" id="backColor" title="Highlight color" onchange="exec('hiliteColor', this.value)">
-      </div>
+  <button onclick="cmd('justifyLeft')">Left</button>
+  <button onclick="cmd('justifyCenter')">Center</button>
+  <button onclick="cmd('justifyRight')">Right</button>
 
-      <div class="group">
-        <button class="btn" onclick="exec('justifyLeft')" title="Align left">≡</button>
-        <button class="btn" onclick="exec('justifyCenter')" title="Center">≡</button>
-        <button class="btn" onclick="exec('justifyRight')" title="Align right">≡</button>
-        <button class="btn" onclick="exec('justifyFull')" title="Justify">↔</button>
-      </div>
+  <button onclick="insertImage()">📷 Image</button>
+  <button onclick="exportPDF()">📄 Export PDF</button>
+</div>
 
-      <div class="group">
-        <button class="btn" onclick="exec('insertUnorderedList')" title="Bullet list">• List</button>
-        <button class="btn" onclick="exec('insertOrderedList')" title="Numbered list">1. List</button>
-        <button class="btn" onclick="exec('outdent')" title="Outdent">←</button>
-        <button class="btn" onclick="exec('indent')" title="Indent">→</button>
-      </div>
-
-      <div class="group">
-        <button class="btn" onclick="triggerImageUpload()">Insert Image</button>
-        <input id="imageUploader" type="file" accept="image/*" class="hidden" onchange="handleImageUpload(event)">
-        <button class="btn" onclick="insertImageByUrl()">Image URL</button>
-      </div>
-
-      <div class="group right-actions" style="margin-left:auto">
-        <button class="btn primary" id="saveBtn">Save Draft</button>
-        <button class="btn" id="loadBtn">Load Draft</button>
-        <button class="btn primary" id="exportPDFBtn">Export PDF</button>
-      </div>
-    </div>
-
-    <div class="editor-wrap">
-      <div class="sidebar card">
-        <div style="display:flex;justify-content:space-between;align-items:center">
-          <strong>Pages</strong>
-          <div>
-            <button class="btn" onclick="addPage()">+ Page</button>
-            <button class="btn" onclick="duplicatePage()">⧉</button>
-          </div>
-        </div>
-
-        <div class="pages-list" id="pagesList"></div>
-
-        <div class="note">
-          Tip: Click inside the white paper area to type. Use toolbar for formatting. Use Save Draft to keep work locally.
-        </div>
-
-        <div style="margin-top:12px">
-          <strong>Export</strong>
-          <div class="muted">PDF export keeps layout. For best results, use desktop browser.</div>
-        </div>
-
-        <div style="margin-top:12px">
-          <strong>Shortcuts</strong>
-          <div class="muted" style="font-size:13px">
-            Ctrl/Cmd + B/I/U — Bold/Italic/Underline<br>
-            Ctrl/Cmd + Z — Undo<br>
-            Ctrl/Cmd + Y — Redo<br>
-            Ctrl/Cmd + S — Save Draft
-          </div>
-        </div>
-      </div>
-
-      <div class="canvas-area">
-        <div id="pagesContainer"></div>
-      </div>
-    </div>
-
-    <div class="footer-note">
-      <small class="muted">Xizoa Docs — prototype. Improved with Debounced Autosave (Gemini).</small>
-    </div>
+<!-- EDITOR -->
+<div class="editor-container">
+  <div id="paper" class="paper" contenteditable="true">
+    Start writing here...
   </div>
+</div>
 
-  <script>
-    // State
-    let state = { pages: [], active: 0 }
-    const STORAGE_KEY = 'xizoa_docs_v1'
-    let saveTimeout // Debounce timer
+<script>
+function cmd(action) {
+  document.execCommand(action, false, null);
+}
 
-    // Utility: Debounce function for optimizing performance
-    function debounce(func, delay) {
-        let timeout;
-        return function(...args) {
-            clearTimeout(timeout);
-            timeout = setTimeout(() => func.apply(this, args), delay);
-        };
-    }
+function cmdValue(action, value) {
+  document.execCommand(action, false, value);
+}
 
-    // Debounced versions of frequently called functions
-    const saveDraftAutoDebounced = debounce(saveDraftAuto, 500) // Saves after 500ms of inactivity
-    const renderPagesDebounced = debounce(renderPages, 500) // Updates thumbnails after 500ms of inactivity
+function insertImage() {
+  const url = prompt("Enter Image URL:");
+  if (url) document.execCommand("insertImage", false, url);
+}
 
+function exportPDF() {
+  alert("PDF Export logic add kar dena — UI ready hai.");
+}
+</script>
 
-    // Init
-    function newPage(content){
-      return {
-        id: Date.now().toString(36) + Math.random().toString(36).slice(2,6),
-        title: content?.title || 'Untitled',
-        html: content?.html || `<h2 style="margin-top:0">Title</h2><p>Start writing your assignment here...</p>`
-      }
-    }
-
-    function init(){
-      // attempt load autosave
-      const saved = localStorage.getItem(STORAGE_KEY)
-      if(saved){
-        try{ state = JSON.parse(saved) }catch(e){ state = {pages:[newPage()], active: 0} }
-      } else {
-        state.pages.push(newPage())
-      }
-      renderPages()
-      renderActivePage()
-      updateSavedStatus('loaded')
-    }
-
-    // Toolbar exec wrapper
-    function exec(cmd, value = null){
-      document.execCommand(cmd, false, value)
-      saveDraftAutoDebounced() // Use debounced version
-    }
-
-    // Pages render
-    const pagesListEl = document.getElementById('pagesList')
-    const pagesContainer = document.getElementById('pagesContainer')
-    function renderPages(){
-      pagesListEl.innerHTML = ''
-      state.pages.forEach((p, idx) => {
-        const el = document.createElement('div')
-        el.className = 'page-thumb'
-        el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center">
-                          <div>
-                            <strong>Page ${idx+1}</strong><div class="muted" style="font-size:13px">${stripHtml(p.html).slice(0,80)}...</div>
-                          </div>
-                          <div style="display:flex;flex-direction:column;gap:6px">
-                            <button class="btn" onclick="activatePage(${idx})">Open</button>
-                            <button class="btn" onclick="deletePage(${idx})">Del</button>
-                          </div>
-                        </div>`
-        pagesListEl.appendChild(el)
-      })
-    }
-
-    function renderActivePage(){
-      pagesContainer.innerHTML = ''
-      state.pages.forEach((p, idx) => {
-        const pageEl = document.createElement('div')
-        pageEl.className = 'page'
-        pageEl.contentEditable = (idx === state.active) ? "true" : "false"
-        pageEl.dataset.idx = idx
-        pageEl.innerHTML = p.html
-        // Use debounced versions for input events
-        pageEl.addEventListener('input', () => {
-          state.pages[idx].html = pageEl.innerHTML
-          saveDraftAutoDebounced()
-          renderPagesDebounced()
-        })
-        pageEl.addEventListener('focus', ()=>{ state.active = idx; setActiveVisual() })
-        // Add small page meta
-        const meta = document.createElement('div')
-        meta.className = 'page-meta'
-        meta.innerHTML = `<div class="muted">Page ${idx+1}</div>`
-        const wrapper = document.createElement('div')
-        wrapper.appendChild(meta)
-        wrapper.appendChild(pageEl)
-        pagesContainer.appendChild(wrapper)
-      })
-      setActiveVisual()
-    }
-
-    function setActiveVisual(){
-      const pageEls = document.querySelectorAll('.page')
-      pageEls.forEach(el=>{
-        const idx = Number(el.dataset.idx)
-        el.contentEditable = (idx === state.active) ? "true" : "false"
-        if(idx === state.active) {
-          el.style.boxShadow = '0 20px 60px rgba(2,6,23,0.45)'
-          el.focus()
-          placeCursorAtEnd(el)
-        } else {
-          el.style.boxShadow = '0 16px 40px rgba(2,6,23,0.35)'
-        }
-      })
-      renderPages() // This call is okay here, as it's not triggered by rapid input
-    }
-
-    function activatePage(i){ state.active = i; renderActivePage() }
-    function addPage(){
-      state.pages.push(newPage({title:`Page ${state.pages.length+1}`}))
-      state.active = state.pages.length - 1
-      renderActivePage()
-      saveDraftAuto()
-    }
-    function duplicatePage(){
-      const copy = JSON.parse(JSON.stringify(state.pages[state.active]))
-      copy.id = Date.now().toString(36)
-      state.pages.splice(state.active+1, 0, copy)
-      state.active = state.active+1
-      renderActivePage()
-      saveDraftAuto()
-    }
-    function deletePage(i){
-      if(state.pages.length === 1){
-        if(confirm('Last page — clear content?')){ state.pages[0] = newPage(); state.active = 0; renderActivePage(); saveDraftAuto() }
-        return
-      }
-      if(!confirm('Delete page ' + (i+1) + '?')) return
-      state.pages.splice(i,1)
-      state.active = Math.max(0, state.active-1)
-      renderActivePage()
-      saveDraftAuto()
-    }
-
-    // Helpers
-    function stripHtml(str){ return str.replace(/<[^>]+>/g,'') }
-    function placeCursorAtEnd(el){
-      try{
-        const range = document.createRange()
-        const sel = window.getSelection()
-        range.selectNodeContents(el)
-        range.collapse(false)
-        sel.removeAllRanges()
-        sel.addRange(range)
-      }catch(e){}
-    }
-
-    // Image insert
-    function triggerImageUpload(){ document.getElementById('imageUploader').click() }
-    async function handleImageUpload(e){
-      const f = e.target.files[0]; if(!f) return
-      const url = await readFileAsDataURL(f)
-      insertImage(url)
-      e.target.value = ''
-    }
-    function readFileAsDataURL(file){ return new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(r.result); r.onerror = rej; r.readAsDataURL(file) }) }
-    function insertImageByUrl(){
-      const url = prompt('Paste image URL (ends with .jpg/.png) or cancel')
-      if(!url) return
-      insertImage(url)
-    }
-    function insertImage(url){
-      // Insert into active page at caret
-      activatePage(state.active)
-      exec('insertImage', url)
-      saveDraftAuto() // Manual image insertion should save immediately
-    }
-
-    // Save / Load
-    document.getElementById('saveBtn').addEventListener('click', saveDraftManual)
-    document.getElementById('loadBtn').addEventListener('click', loadDraft)
-
-    function saveDraftManual(){
-      // Ensure any pending autosave is cleared and then save immediately
-      clearTimeout(saveTimeout);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-      updateSavedStatus('saved')
-      alert('Draft saved locally ✅')
-    }
-    function saveDraftAuto(){
-      // This is the immediate save function called by the debounced wrapper
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state))
-      updateSavedStatus('auto-saved')
-    }
-    function loadDraft(){
-      const d = localStorage.getItem(STORAGE_KEY)
-      if(!d) return alert('No saved draft found')
-      try{
-        state = JSON.parse(d)
-        renderPages(); renderActivePage()
-        updateSavedStatus('loaded')
-        alert('Draft loaded ✅')
-      }catch(e){
-        alert('Failed to load draft')
-      }
-    }
-    function updateSavedStatus(s){
-      const el = document.getElementById('savedStatus'); el.textContent = s
-      // Clear previous timeout and set a new one
-      if(el.dataset.timeout) clearTimeout(Number(el.dataset.timeout))
-      el.dataset.timeout = setTimeout(()=>{ 
-        if(el.textContent === s || el.textContent === 'auto-saved') el.textContent = 'ready' 
-      }, 3000)
-    }
-
-    // Export PDF (html2pdf)
-    document.getElementById('exportPDFBtn').addEventListener('click', exportPDF)
-    // Ensures html2pdf is loaded only when needed
-    async function ensureHtml2Pdf(){ if(window.html2pdf) return; return new Promise(res=>{ const s=document.createElement('script'); s.src='https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js'; s.onload=res; document.head.appendChild(s) }) }
-    async function exportPDF(){
-      await ensureHtml2Pdf()
-      // clone pages into white wrapper sized for A4
-      const wrapper = document.createElement('div')
-      wrapper.style.background = '#fff'
-      wrapper.style.padding = '10px'
-      state.pages.forEach(p => {
-        const pg = document.createElement('div')
-        pg.style.width = '794px'
-        pg.style.minHeight = '1123px'
-        pg.style.boxSizing = 'border-box'
-        pg.style.padding = '28px'
-        pg.style.background = '#fff'
-        pg.innerHTML = p.html
-        wrapper.appendChild(pg)
-      })
-      const opt = { margin: 0.2, filename: 'xizoa-docs.pdf', image: {type: 'jpeg', quality: 0.95}, html2canvas: {scale: 2, useCORS: true}, jsPDF: {unit: 'pt', format: 'a4', orientation: 'portrait'} }
-      html2pdf().from(wrapper).set(opt).save()
-    }
-
-    // Keyboard shortcuts (basic)
-    window.addEventListener('keydown', (e) => {
-      if((e.ctrlKey || e.metaKey)){
-        // B, I, U, Z, Y handled by exec() automatically
-        if(e.key.toLowerCase() === 's'){ 
-            e.preventDefault(); 
-            saveDraftManual() // Save shortcut calls manual save
-        }
-      }
-    })
-
-    // Utilities
-    function activateFirstTextNode() {
-      // ensure there's a focus on active page
-      const p = document.querySelector('.page[contenteditable="true"]')
-      if(p) placeCursorAtEnd(p)
-    }
-
-    // init
-    init()
-
-    // Expose to global for inline toolbar calls
-    window.exec = exec
-    window.addPage = addPage
-    window.duplicatePage = duplicatePage
-    window.deletePage = deletePage
-    window.activatePage = activatePage
-    window.insertImage = insertImage
-    window.insertImageByUrl = insertImageByUrl
-    window.triggerImageUpload = triggerImageUpload
-    window.handleImageUpload = handleImageUpload
-    window.saveDraftManual = saveDraftManual
-    window.loadDraft = loadDraft
-    window.exportPDF = exportPDF
-
-    // small helper to focus active page when clicking anywhere on it
-    document.addEventListener('click', (e) => {
-      const p = e.target.closest('.page')
-      if(p) {
-        const idx = Number(p.dataset.idx)
-        if(!isNaN(idx)) { state.active = idx; setActiveVisual() }
-      }
-    })
-  </script>
 </body>
-          </html>
-          
+</html>
