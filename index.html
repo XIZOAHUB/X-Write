@@ -1,326 +1,506 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Xizoa Docs — Export Ready</title>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Xizoa Docs — Ultra Premium (No Backend)</title>
 
-  <!-- html2pdf (html2canvas + jsPDF bundle) -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"
-    integrity="sha512-YcsIPn2Qb0u7m1v2y6o2a3fXfQEf9k2x2kL0x+e0qg3eQ6V0p0GgfyX1u6V+V1kXJr1XQk5qZ7gzKPVU8R9qQ=="
-    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<!-- html2pdf (html2canvas + jsPDF bundle) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"
+  integrity="sha512-YcsIPn2Qb0u7m1v2y6o2a3fXfQEf9k2x2kL0x+e0qg3eQ6V0p0GgfyX1u6V+V1kXJr1XQk5qZ7gzKPVU8R9qQ=="
+  crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-  <style>
-    :root{
-      --bg:#061021; --card:#0f1720; --accent1:#2ea6ff; --accent2:#9a6bff;
-      --text:#e6eef8; --muted:#9fb0c8; --paper:#ffffff; --radius:14px;
-      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-    }
-    html,body {height:100%; margin:0; background:linear-gradient(180deg,#05111b, #071423); color:var(--text);}
-    .app {display:flex; flex-direction:column; height:100vh;}
-    .header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding:12px 16px; gap:12px;
-      backdrop-filter: blur(6px); background: rgba(255,255,255,0.02);
-      border-bottom:1px solid rgba(255,255,255,0.03);
-    }
-    .brand {display:flex; gap:12px; align-items:center}
-    .logo {
-      width:44px; height:44px; border-radius:10px;
-      background: linear-gradient(135deg,var(--accent1),var(--accent2));
-      display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff;
-      box-shadow: 0 6px 18px rgba(42,128,255,0.12);
-    }
-    .title {font-weight:700; font-size:16px}
-    .status {font-size:13px; color:var(--muted)}
+<style>
+:root{
+  --bg:#071023; --panel:#0f1720; --card:#0b1116; --muted:#9fb0c8;
+  --accent1:#2ea6ff; --accent2:#9a6bff; --glass: rgba(255,255,255,0.03);
+  --paper:#ffffff; --text-dark:#0b1720; --radius:12px; --smooth:0.18s;
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  --a4-w:794px; --a4-h:1123px;
+}
+*{box-sizing:border-box}
+html,body {height:100%; margin:0; background:linear-gradient(180deg,#02101a,#071523); color:#eaf3ff}
+.app {display:flex; flex-direction:column; height:100vh;}
 
-    /* Toolbar (ribbon hybrid) */
-    .toolbar {display:flex; gap:8px; padding:12px 16px; flex-wrap:wrap; align-items:center; border-bottom:1px solid rgba(255,255,255,0.02)}
-    .seg {display:flex; gap:8px; align-items:center;}
-    button, select, input[type="file"] {background:#0b1220; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:8px 10px; border-radius:10px; cursor:pointer; font-size:14px}
-    button.primary {background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#001; font-weight:700; box-shadow: 0 8px 18px rgba(154,107,255,0.12)}
-    .small {padding:6px 8px; font-size:13px}
-    .flex-spacer {flex:1}
+/* header */
+.header{display:flex;align-items:center;justify-content:space-between;padding:12px 16px;background:var(--glass);backdrop-filter: blur(6px);border-bottom:1px solid rgba(255,255,255,0.02)}
+.brand{display:flex;gap:12px;align-items:center}
+.logo{width:46px;height:46px;border-radius:10px;background:linear-gradient(135deg,var(--accent1),var(--accent2));display:flex;align-items:center;justify-content:center;color:#031; font-weight:800; font-size:18px; box-shadow:0 10px 30px rgba(58,139,255,0.08)}
+.title{font-weight:700}
+.status{font-size:13px;color:var(--muted)}
 
-    /* Editor area */
-    .editor-wrap {flex:1; overflow:auto; padding:18px; display:flex; justify-content:center}
-    .paper {
-      width:794px; /* typical A4 px @96dpi ~ 794 x 1123 */
-      min-height:1123px;
-      background:var(--paper); color:#111;
-      border-radius:8px; padding:40px; box-shadow: 0 20px 50px rgba(2,6,23,0.6);
-      box-sizing:border-box; margin-bottom:40px;
-    }
-    /* mobile */
-    @media (max-width:920px){
-      .paper {width:92%}
-      .toolbar {padding:10px}
-      .logo {width:36px;height:36px}
-    }
+/* top controls */
+.toolbar{display:flex;gap:8px;padding:10px 16px;align-items:center;border-bottom:1px solid rgba(255,255,255,0.02);flex-wrap:wrap}
+.btn{background:#0c141a;border:1px solid rgba(255,255,255,0.03);padding:8px 10px;border-radius:10px;color:inherit;cursor:pointer;transition:all var(--smooth)}
+.btn.primary{background:linear-gradient(90deg,var(--accent1),var(--accent2));color:#001;font-weight:700;box-shadow:0 8px 20px rgba(154,107,255,0.08)}
+.select, select {background:#0c141a;border:1px solid rgba(255,255,255,0.03);padding:8px;border-radius:10px;color:inherit}
+.toolbar .flex{flex:1}
 
-    /* contenteditable default styling */
-    #paper[contenteditable="true"] {outline:none; white-space:pre-wrap; word-break:break-word; font-size:16px; line-height:1.6; font-family: 'Inter', sans-serif; color:#0b1720}
-    .hint {color:var(--muted); font-size:13px; margin-bottom:12px}
-    .controls {display:flex; gap:8px; align-items:center}
-    .notice {font-size:13px; color:var(--muted)}
-  </style>
+/* main area */
+.main{display:flex;flex:1;overflow:hidden}
+.sidebar{width:300px;background:linear-gradient(180deg,rgba(255,255,255,0.01),transparent);padding:14px;border-right:1px solid rgba(255,255,255,0.02);overflow:auto}
+.side-section{background:linear-gradient(180deg,rgba(255,255,255,0.015),transparent);padding:12px;border-radius:12px;margin-bottom:12px}
+.pages-list{display:flex;flex-direction:column;gap:8px}
+.page-item{display:flex;align-items:center;justify-content:space-between;padding:8px;border-radius:8px;background:rgba(255,255,255,0.01);cursor:pointer}
+.page-item.active{outline:2px solid rgba(154,107,255,0.12)}
+
+/* editor area center */
+.editor-area{flex:1;overflow:auto;display:flex;justify-content:center;align-items:flex-start;padding:20px}
+.paper-wrapper{width:calc(var(--a4-w) + 40px);display:flex;flex-direction:column;gap:12px;align-items:center}
+.page{
+  width: var(--a4-w); min-height: var(--a4-h); background:var(--paper); color:var(--text-dark);
+  border-radius:10px; padding:36px; box-shadow: 0 20px 50px rgba(2,6,23,0.55); position:relative; box-sizing:border-box;
+  overflow:visible;
+}
+.page[contenteditable="true"]{outline:none}
+.page .footer{position:absolute;bottom:12px;left:0;width:100%;text-align:center;color:#666;font-size:12px}
+
+/* image resizer */
+.resizable{display:inline-block; position:relative}
+.resizable img{max-width:100%; display:block; border-radius:6px}
+.handle{width:10px;height:10px;background:var(--accent2);position:absolute;border-radius:2px;right:-6px;bottom:-6px;cursor:se-resize;}
+
+/* small utilities */
+.hint{color:var(--muted);font-size:13px;margin-bottom:8px}
+.controls-row{display:flex;gap:8px;align-items:center}
+
+/* find modal */
+.modal{position:fixed;right:20px;bottom:20px;background:var(--card);padding:12px;border-radius:10px;border:1px solid rgba(255,255,255,0.02);box-shadow:0 12px 40px rgba(0,0,0,0.5)}
+
+/* responsive */
+@media (max-width:980px){
+  .sidebar{display:none}
+  .paper-wrapper{width:95%}
+  .toolbar{padding:8px}
+}
+
+/* print-friendly helpers for export */
+.print-page{width:794px;min-height:1123px;background:#fff;padding:40px;box-sizing:border-box;margin:0 auto;}
+
+/* page-break helper */
+.page-break{page-break-after: always;}
+
+/* accessibility improvements */
+button:focus, select:focus {outline:2px solid rgba(58,139,255,0.12)}
+</style>
 </head>
 <body>
-  <div class="app">
-    <div class="header">
-      <div class="brand">
-        <div class="logo">X</div>
-        <div>
-          <div class="title">Xizoa Docs — Premium</div>
-          <div class="status" id="status">Ready</div>
-        </div>
-      </div>
-
-      <div style="display:flex; gap:8px; align-items:center;">
-        <div class="notice" id="autosaveStatus">Autosave: Off</div>
-        <button class="small" id="loadDraftBtn">Load Draft</button>
-        <button class="small" id="clearDraftBtn">Clear Draft</button>
+<div class="app">
+  <div class="header">
+    <div class="brand">
+      <div class="logo">X</div>
+      <div>
+        <div class="title">Xizoa Docs — Ultra Premium</div>
+        <div class="status" id="status">Ready</div>
       </div>
     </div>
 
-    <!-- Ribbon toolbar -->
-    <div class="toolbar" role="toolbar" aria-label="Editor toolbar">
-      <div class="seg">
-        <button onclick="exec('bold')" title="Bold"><b>B</b></button>
-        <button onclick="exec('italic')" title="Italic"><i>I</i></button>
-        <button onclick="exec('underline')" title="Underline"><u>U</u></button>
-      </div>
-
-      <div class="seg">
-        <select id="fontSize" onchange="exec('fontSize', this.value)">
-          <option value="3">12px</option>
-          <option value="4" selected>14px</option>
-          <option value="5">18px</option>
-          <option value="6">24px</option>
-        </select>
-
-        <button onclick="exec('justifyLeft')">Left</button>
-        <button onclick="exec('justifyCenter')">Center</button>
-        <button onclick="exec('justifyRight')">Right</button>
-      </div>
-
-      <div class="seg">
-        <button onclick="insertImagePrompt()">Insert Image</button>
-        <input type="file" id="imgFile" accept="image/*" style="display:none" />
-      </div>
-
-      <div class="flex-spacer"></div>
-
-      <div class="seg">
-        <button id="saveBtn" onclick="saveDraft()">Save Draft</button>
-        <button class="primary" id="exportBtn" onclick="exportPDF()">Export PDF</button>
-      </div>
-    </div>
-
-    <div class="editor-wrap">
-      <div id="paper" class="paper" contenteditable="true" spellcheck="true" aria-label="Document editor">
-        <div class="hint">Tip: Click here and start typing. Use toolbar for formatting. Use Save Draft or Export PDF.</div>
-        <h1>Title</h1>
-        <p>Start writing...</p>
-      </div>
+    <div style="display:flex;gap:10px;align-items:center">
+      <div id="autosaveLabel" class="status">Autosave: On</div>
+      <button class="btn" id="toggleTheme">Toggle Theme</button>
+      <button class="btn" id="openTemplates">Templates</button>
+      <button class="btn" id="openFind">Find</button>
+      <button class="btn" id="loadDraftBtn">Load</button>
+      <button class="btn" id="clearDraftBtn">Clear</button>
     </div>
   </div>
 
+  <div class="toolbar" role="toolbar" aria-label="Editor toolbar">
+    <div class="controls-row">
+      <button class="btn" onclick="exec('bold')"><b>B</b></button>
+      <button class="btn" onclick="exec('italic')"><i>I</i></button>
+      <button class="btn" onclick="exec('underline')"><u>U</u></button>
+
+      <select id="fontSelect" class="select" onchange="setFont(this.value)">
+        <option value="Inter" selected>Inter</option>
+        <option value="Georgia">Georgia</option>
+        <option value="Times New Roman">Times New Roman</option>
+        <option value="Roboto">Roboto</option>
+      </select>
+
+      <select id="sizeSelect" class="select" onchange="setFontSize(this.value)">
+        <option value="12px">12px</option>
+        <option value="14px" selected>14px</option>
+        <option value="16px">16px</option>
+        <option value="18px">18px</option>
+      </select>
+
+      <button class="btn" onclick="exec('justifyLeft')">Left</button>
+      <button class="btn" onclick="exec('justifyCenter')">Center</button>
+      <button class="btn" onclick="exec('justifyRight')">Right</button>
+
+      <input type="file" id="imgFile" accept="image/*" style="display:none"/>
+      <button class="btn" onclick="triggerImgUpload()">Insert Image</button>
+      <button class="btn" onclick="insertTable()">Insert Table</button>
+    </div>
+
+    <div class="flex"></div>
+
+    <div class="controls-row">
+      <button class="btn" id="addPageBtn">+ Page</button>
+      <button class="btn" id="prevPageBtn">◀</button>
+      <button class="btn" id="nextPageBtn">▶</button>
+      <button class="btn" onclick="saveDraft()">Save</button>
+      <button class="btn primary" id="exportPdfBtn" onclick="exportPDF()">Export PDF</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <aside class="sidebar">
+      <div class="side-section">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <strong>Pages</strong>
+          <small id="pageCount" style="color:var(--muted)">0</small>
+        </div>
+        <div class="pages-list" id="pagesList"></div>
+      </div>
+
+      <div class="side-section">
+        <strong>Draft Versions</strong>
+        <div id="versionsList" style="margin-top:8px"></div>
+      </div>
+
+      <div class="side-section">
+        <strong>Stats</strong>
+        <div style="margin-top:8px;color:var(--muted)">
+          <div>Words: <span id="wordCount">0</span></div>
+          <div>Chars: <span id="charCount">0</span></div>
+        </div>
+      </div>
+    </aside>
+
+    <div class="editor-area">
+      <div class="paper-wrapper" id="paperWrapper">
+        <!-- pages injected here -->
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Find modal -->
+<div id="findModal" class="modal" style="display:none">
+  <div style="display:flex;gap:8px;align-items:center">
+    <input id="findInput" placeholder="Find" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#08101a;color:inherit"/>
+    <input id="replaceInput" placeholder="Replace" style="padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:#08101a;color:inherit"/>
+    <button class="btn" onclick="findNext()">Find</button>
+    <button class="btn" onclick="replaceAll()">Replace All</button>
+    <button class="btn" onclick="closeFind()">Close</button>
+  </div>
+</div>
+
+<!-- Templates modal (simple) -->
+<div id="templatesModal" class="modal" style="display:none">
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <div style="font-weight:700">Templates</div>
+    <button class="btn" onclick="applyTemplate('resume')">Resume</button>
+    <button class="btn" onclick="applyTemplate('report')">Report</button>
+    <button class="btn" onclick="applyTemplate('blank')">Blank</button>
+    <button class="btn" onclick="closeTemplates()">Close</button>
+  </div>
+</div>
+
 <script>
-/* --------------- Utilities & features --------------- */
-
-/* Exec wrapper for document.execCommand (still works for most simple formatting) */
-function exec(cmd, value=null){
-  document.execCommand(cmd, false, value);
-  paperChanged();
-}
-
-/* Simple debounce */
-function debounce(fn, wait){
-  let t;
-  return function(...a){ clearTimeout(t); t = setTimeout(()=> fn.apply(this,a), wait); };
-}
-
-/* DOM refs */
-const paper = document.getElementById('paper');
+/* ------------- Core Data & Helpers ------------- */
+const wrapper = document.getElementById('paperWrapper');
+const pagesList = document.getElementById('pagesList');
+const pageCountLbl = document.getElementById('pageCount');
+const wordCountLbl = document.getElementById('wordCount');
+const charCountLbl = document.getElementById('charCount');
 const status = document.getElementById('status');
-const autosaveStatus = document.getElementById('autosaveStatus');
-const saveBtn = document.getElementById('saveBtn');
-const loadDraftBtn = document.getElementById('loadDraftBtn');
-const clearDraftBtn = document.getElementById('clearDraftBtn');
-const imgFile = document.getElementById('imgFile');
+const DRAFT_KEY = 'xizoa_ultrapremium_v1';
+const VERSIONS_KEY = 'xizoa_versions_v1';
+let pages = []; // array of page elements
+let currentPageIndex = 0;
 
-const DRAFT_KEY = 'xizoa_draft_v1';
+/* Init: create 1 page */
+function createPage(content = '<h1>Title</h1><p>Start writing...</p>'){
+  const page = document.createElement('div');
+  page.className = 'page';
+  page.contentEditable = true;
+  page.innerHTML = content + `<div class="footer">Page <span class="pnum">?</span></div>`;
+  // image resize handler
+  page.addEventListener('click', (e) => {
+    // manage active state
+    document.querySelectorAll('.page').forEach(p => p.style.outline = 'none');
+    page.style.outline = '2px solid rgba(154,107,255,0.08)';
+    updateStats();
+  });
+  // content change
+  page.addEventListener('input', debounce(()=> {
+    autosave();
+    updateFooterNumbers();
+    updateStats();
+  }, 600));
+  // drag & drop image
+  page.addEventListener('dragover', (ev) => ev.preventDefault());
+  page.addEventListener('drop', (ev) => {
+    ev.preventDefault();
+    const f = ev.dataTransfer.files && ev.dataTransfer.files[0];
+    if(f && f.type.startsWith('image/')){
+      const reader = new FileReader();
+      reader.onload = e => insertImageHTML(page, e.target.result);
+      reader.readAsDataURL(f);
+    }
+  });
+  return page;
+}
 
-/* ---------- Save Draft (localStorage) ---------- */
+function renderPages(){
+  wrapper.innerHTML = '';
+  pages.forEach((p, idx) => {
+    wrapper.appendChild(p);
+  });
+  renderPagesSidebar();
+  updateFooterNumbers();
+}
+
+function renderPagesSidebar(){
+  pagesList.innerHTML = '';
+  pages.forEach((p, idx) => {
+    const itm = document.createElement('div');
+    itm.className = 'page-item' + (idx === currentPageIndex ? ' active' : '');
+    itm.innerHTML = `<div>Page ${idx+1}</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn small" onclick="gotoPage(${idx})">Open</button>
+        <button class="btn small" onclick="deletePage(${idx})">Del</button>
+      </div>`;
+    pagesList.appendChild(itm);
+  });
+  pageCountLbl.textContent = pages.length;
+}
+
+/* navigation */
+function gotoPage(i){
+  if(i < 0 || i >= pages.length) return;
+  currentPageIndex = i;
+  pages[currentPageIndex].scrollIntoView({behavior:'smooth', block:'center'});
+  renderPagesSidebar();
+}
+
+/* add/remove */
+document.getElementById('addPageBtn').addEventListener('click', ()=> {
+  pages.push(createPage());
+  renderPages();
+  gotoPage(pages.length-1);
+  autosave();
+});
+
+function deletePage(i){
+  if(pages.length === 1){ alert('At least one page required'); return; }
+  pages.splice(i,1);
+  currentPageIndex = Math.max(0, currentPageIndex-1);
+  renderPages();
+  autosave();
+}
+
+/* next/prev */
+document.getElementById('nextPageBtn').addEventListener('click', ()=> gotoPage(Math.min(pages.length-1, currentPageIndex+1)));
+document.getElementById('prevPageBtn').addEventListener('click', ()=> gotoPage(Math.max(0, currentPageIndex-1)));
+
+/* init with two pages for premium feel */
+pages.push(createPage());
+pages.push(createPage());
+renderPages();
+gotoPage(0);
+
+/* ------------- Formatting helpers ------------- */
+function exec(cmd, val=null){
+  document.execCommand(cmd, false, val);
+  autosave();
+  updateStats();
+}
+function setFont(f){ document.execCommand('fontName', false, f); autosave() }
+function setFontSize(sz){ /* apply to selection */ document.execCommand('fontSize', false, 4); /* temporary */ 
+  // Apply real size by wrapping a span
+  const sel = window.getSelection(); if(!sel.rangeCount) return;
+  const range = sel.getRangeAt(0);
+  const span = document.createElement('span'); span.style.fontSize = sz;
+  span.appendChild(range.extractContents());
+  range.insertNode(span);
+  autosave();
+}
+
+/* ------------- Image insert & resize ------------ */
+document.getElementById('imgFile').addEventListener('change', (e) => {
+  const f = e.target.files[0]; if(!f) return;
+  const reader = new FileReader();
+  reader.onload = ev => {
+    insertImageHTML(pages[currentPageIndex], ev.target.result);
+  };
+  reader.readAsDataURL(f);
+  e.target.value = '';
+});
+function triggerImgUpload(){ document.getElementById('imgFile').click() }
+function insertImageHTML(page, src){
+  const wrap = document.createElement('span'); wrap.className = 'resizable';
+  wrap.innerHTML = `<img src="${src}" draggable="false"/><span class="handle"></span>`;
+  // add resize support
+  enableResize(wrap);
+  // insert at caret
+  pasteNodeAtCaret(wrap, page);
+  autosave();
+}
+function pasteNodeAtCaret(node, container){
+  const sel = window.getSelection();
+  if(sel.rangeCount === 0){
+    container.appendChild(node); return;
+  }
+  const range = sel.getRangeAt(0);
+  // ensure selection inside container
+  let sc = range.commonAncestorContainer;
+  while(sc && sc !== container && sc.nodeType === 1) sc = sc.parentNode;
+  // fallback append
+  container.appendChild(node);
+}
+function enableResize(wrap){
+  const img = wrap.querySelector('img'), handle = wrap.querySelector('.handle');
+  handle.onmousedown = (m) => {
+    m.preventDefault();
+    const startW = img.clientWidth, startX = m.clientX;
+    function move(e){
+      const dx = e.clientX - startX;
+      let nw = Math.max(60, startW + dx);
+      img.style.width = nw + 'px';
+    }
+    function up(){ window.removeEventListener('mousemove', move); window.removeEventListener('mouseup', up); autosave(); }
+    window.addEventListener('mousemove', move);
+    window.addEventListener('mouseup', up);
+  };
+}
+
+/* ------------- Table Insert (simple) ------------- */
+function insertTable(){
+  const rows = parseInt(prompt('Rows', '3')) || 3;
+  const cols = parseInt(prompt('Columns', '3')) || 3;
+  let html = '<table style="width:100%;border-collapse:collapse">';
+  for(let r=0;r<rows;r++){
+    html += '<tr>';
+    for(let c=0;c<cols;c++){
+      html += `<td contenteditable="true" style="border:1px solid #ddd;padding:8px">Cell</td>`;
+    }
+    html += '</tr>';
+  }
+  html += '</table><p></p>';
+  pasteHtmlAtCaret(html);
+  autosave();
+}
+
+/* helper paste html at caret (global) */
+function pasteHtmlAtCaret(html) {
+  const sel = window.getSelection();
+  if(!sel.rangeCount) { document.activeElement.appendChild(document.createTextNode(html)); return; }
+  const range = sel.getRangeAt(0); range.deleteContents();
+  const el = document.createElement('div'); el.innerHTML = html;
+  const frag = document.createDocumentFragment();
+  while(el.firstChild) frag.appendChild(el.firstChild);
+  range.insertNode(frag);
+  range.collapse(false);
+}
+
+/* ------------- Find & Replace ------------- */
+document.getElementById('openFind').addEventListener?.('click', ()=> openFind());
+function openFind(){ document.getElementById('findModal').style.display='block' }
+function closeFind(){ document.getElementById('findModal').style.display='none' }
+function findNext(){
+  const q = document.getElementById('findInput').value; if(!q) return;
+  const re = new RegExp(q, 'i');
+  // naive search across pages
+  for(let i=0;i<pages.length;i++){
+    if(re.test(pages[i].innerText)){
+      gotoPage(i);
+      alert('Found on page ' + (i+1));
+      return;
+    }
+  }
+  alert('Not found');
+}
+function replaceAll(){
+  const q = document.getElementById('findInput').value; const r = document.getElementById('replaceInput').value;
+  if(!q) return; const re = new RegExp(q, 'g');
+  pages.forEach(p => {
+    p.innerHTML = p.innerHTML.replace(re, r);
+  });
+  autosave();
+  updateStats();
+  alert('Replaced');
+}
+
+/* ------------- Templates ------------- */
+document.getElementById('openTemplates').addEventListener('click', ()=> document.getElementById('templatesModal').style.display='block');
+function closeTemplates(){ document.getElementById('templatesModal').style.display='none' }
+function applyTemplate(name){
+  if(name === 'resume'){
+    pages = [createPage('<h1>Your Name</h1><h3>Resume</h3><p>Summary...</p>')];
+  } else if(name === 'report'){
+    pages = [createPage('<h1>Report Title</h1><h4>Subtitle</h4><p>Executive summary...</p>')];
+  } else {
+    pages = [createPage()];
+  }
+  renderPages();
+  gotoPage(0);
+  closeTemplates();
+  autosave();
+}
+
+/* ------------- Autosave & Versioning ------------- */
+const autosaveLabel = document.getElementById('autosaveLabel');
+let autosaveTimer;
+function autosave(){
+  clearTimeout(autosaveTimer);
+  autosaveLabel.textContent = 'Autosave: ...';
+  autosaveTimer = setTimeout(()=> {
+    saveSnapshot('autosave');
+    autosaveLabel.textContent = 'Autosave: Saved';
+    setTimeout(()=> autosaveLabel.textContent = 'Autosave: On', 1200);
+  }, 800);
+}
 function saveDraft(){
-  const content = paper.innerHTML;
-  localStorage.setItem(DRAFT_KEY, content);
+  saveSnapshot('manual');
   status.textContent = 'Draft saved';
   flashStatus();
 }
-
+function saveSnapshot(type='manual'){
+  const data = pages.map(p => p.innerHTML);
+  const versions = JSON.parse(localStorage.getItem(VERSIONS_KEY) || '[]');
+  const stamp = {time: Date.now(), type, pages: data};
+  versions.unshift(stamp);
+  // keep last 5 versions
+  localStorage.setItem(VERSIONS_KEY, JSON.stringify(versions.slice(0,7)));
+  localStorage.setItem(DRAFT_KEY, JSON.stringify(data));
+  renderVersions();
+}
 function loadDraft(){
-  const content = localStorage.getItem(DRAFT_KEY);
-  if(content){
-    paper.innerHTML = content;
-    status.textContent = 'Draft loaded';
-  } else {
-    status.textContent = 'No draft found';
-  }
+  const raw = localStorage.getItem(DRAFT_KEY);
+  if(!raw) { alert('No draft'); return; }
+  const data = JSON.parse(raw);
+  pages = data.map(html => createPage(html));
+  renderPages();
+  gotoPage(0);
+  status.textContent = 'Draft loaded';
   flashStatus();
 }
-
-function clearDraft(){
-  localStorage.removeItem(DRAFT_KEY);
-  status.textContent = 'Draft cleared';
-  flashStatus();
-}
-
-/* Autosave: debounce on input */
-const autosave = debounce(()=> {
-  localStorage.setItem(DRAFT_KEY, paper.innerHTML);
-  autosaveStatus.textContent = 'Autosave: Saved';
-  setTimeout(()=> autosaveStatus.textContent = 'Autosave: On', 1200);
-}, 1600);
-
-function paperChanged(){
-  autosave();
-  status.textContent = 'Editing...';
-}
-
-/* Flash status text briefly */
-function flashStatus(){ setTimeout(()=> status.textContent = 'Ready', 1200); }
-
-/* Attach events */
-paper.addEventListener('input', paperChanged);
-loadDraftBtn.addEventListener('click', loadDraft);
-clearDraftBtn.addEventListener('click', clearDraft);
-
-/* load draft on start if present */
-if(localStorage.getItem(DRAFT_KEY)){
-  autosaveStatus.textContent = 'Autosave: On (draft exists)';
-} else {
-  autosaveStatus.textContent = 'Autosave: On';
-}
-
-/* -------- Image insertion - URL prompt & local file support -------- */
-function insertImagePrompt(){
-  const url = prompt('Paste image URL OR press Cancel to upload file from device:');
-  if(url && url.trim()){
-    insertImageURL(url.trim());
-    return;
-  }
-  // trigger file input
-  imgFile.click();
-}
-
-imgFile.addEventListener('change', async (e) => {
-  const f = e.target.files[0];
-  if(!f) return;
-  const reader = new FileReader();
-  reader.onload = function(ev){
-    insertImageURL(ev.target.result);
-  };
-  reader.readAsDataURL(f);
-  imgFile.value = '';
+document.getElementById('loadDraftBtn').addEventListener('click', loadDraft);
+document.getElementById('clearDraftBtn').addEventListener('click', ()=> {
+  if(!confirm('Clear all saved drafts?')) return;
+  localStorage.removeItem(DRAFT_KEY); localStorage.removeItem(VERSIONS_KEY);
+  renderVersions(); status.textContent='Drafts cleared'; flashStatus();
 });
-
-function insertImageURL(url){
-  // insert responsive image with max-width
-  const imgHtml = `<div style="text-align:center"><img src="${url}" style="max-width:100%;height:auto;border-radius:6px;margin:10px 0"/></div><div contenteditable="false"></div>`;
-  // use range insert
-  pasteHtmlAtCaret(imgHtml);
-  paperChanged();
+function renderVersions(){
+  const vs = JSON.parse(localStorage.getItem(VERSIONS_KEY) || '[]');
+  const out = document.getElementById('versionsList');
+  out.innerHTML = '';
+  vs.forEach((v, idx)=>{
+    const el = document.createElement('div');
+    const d = new Date(v.time).toLocaleString();
+    el.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;padding:6px;background:rgba(255,255,255,0.01);border-radius:6px;margin-bottom:6px">
+      <div style="font-size:13px">${v.type} • ${d}</div>
+      <div style="display:flex;gap:6px">
+        <button class="btn small" onclick="restoreVersion(${idx})">Restore</button>
+      </div>
+    </div>`;
+    out.appendChild(el);
+  });
 }
-
-/* helper to paste html at caret in contenteditable */
-function pasteHtmlAtCaret(html) {
-  let sel, range;
-  if (window.getSelection) {
-      sel = window.getSelection();
-      if (sel.getRangeAt && sel.rangeCount) {
-          range = sel.getRangeAt(0);
-          range.deleteContents();
-          const el = document.createElement("div");
-          el.innerHTML = html;
-          const frag = document.createDocumentFragment(), node = el.firstChild;
-          let lastNode = frag;
-          while (el.firstChild) {
-              frag.appendChild(el.firstChild);
-          }
-          range.insertNode(frag);
-          // move caret after inserted node
-          range.setStartAfter(range.endContainer);
-          range.collapse(true);
-          sel.removeAllRanges();
-          sel.addRange(range);
-      }
-  }
-}
-
-/* -------------- Export to PDF (html2pdf) -------------- */
-async function exportPDF(){
-  // ask filename
-  const suggested = (document.querySelector('#paper h1')?.innerText || 'document').trim() || 'document';
-  let filename = prompt('Enter filename for PDF', suggested + '.pdf');
-  if(filename === null) return; // user cancelled
-  filename = filename.endsWith('.pdf') ? filename : filename + '.pdf';
-
-  // show status
-  status.textContent = 'Preparing PDF...';
-
-  // Clone the paper node to adjust styles for print without affecting live editor
-  const clone = paper.cloneNode(true);
-
-  // Optional: remove UI-only hints or editable attributes in clone
-  clone.querySelectorAll('.hint').forEach(n=> n.remove());
-  clone.setAttribute('contenteditable', 'false');
-
-  // Apply print-friendly width (A4) and background white
-  clone.style.width = '794px';
-  clone.style.minHeight = '1123px';
-  clone.style.padding = '40px';
-  clone.style.boxShadow = 'none';
-  clone.style.margin = '0';
-
-  // Container to isolate clone
-  const container = document.createElement('div');
-  container.style.padding = '20px';
-  container.style.background = '#ffffff';
-  container.appendChild(clone);
-
-  // html2pdf options - tweak for quality
-  const opt = {
-    margin:       [10, 10, 10, 10],
-    filename:     filename,
-    image:        { type: 'jpeg', quality: 0.98 },
-    html2canvas:  { scale: 2, useCORS: true, logging: false, allowTaint: true },
-    jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
-  };
-
-  // trigger download
-  try {
-    await html2pdf().set(opt).from(container).save();
-    status.textContent = 'PDF exported';
-  } catch (err) {
-    console.error(err);
-    status.textContent = 'Export failed';
-    alert('PDF export failed. Try desktop browser or allow cross-origin images.');
-  } finally {
-    setTimeout(()=> status.textContent = 'Ready', 1500);
-  }
-}
-
-/* -------------- Keyboard shortcuts -------------- */
-document.addEventListener('keydown', function(e){
-  if((e.ctrlKey || e.metaKey) && e.key === 's'){
-    e.preventDefault(); saveDraft();
-  }
-  if((e.ctrlKey || e.metaKey) && e.key === 'b'){
-    e.preventDefault(); exec('bold');
-  }
-});
-</script>
-</body>
-</html>
+function restoreVersion(i){
+  const vs = JSON.parse(localStorage.getItem(VERSIONS_KEY) || '[]');
+  if(!vs[i]) return; if(!confirm('Restore version? This will replace current content.'))
