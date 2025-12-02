@@ -1,162 +1,326 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Xizoa Docs — Premium</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Xizoa Docs — Export Ready</title>
 
-<style>
-/* ---------- ROOT THEME ---------- */
-:root {
-  --bg: #0d1117;
-  --card: #161b22;
-  --accent1: #3a8bff;
-  --accent2: #8a5bff;
-  --text: #e6e6e6;
-  --paper: #ffffff;
-  --border: #2b2f36;
-  --radius: 18px;
-  --transition: 0.2s;
-  font-family: "Inter", sans-serif;
-}
+  <!-- html2pdf (html2canvas + jsPDF bundle) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"
+    integrity="sha512-YcsIPn2Qb0u7m1v2y6o2a3fXfQEf9k2x2kL0x+e0qg3eQ6V0p0GgfyX1u6V+V1kXJr1XQk5qZ7gzKPVU8R9qQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
-/* ----------- GLOBAL ---------- */
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-}
+  <style>
+    :root{
+      --bg:#061021; --card:#0f1720; --accent1:#2ea6ff; --accent2:#9a6bff;
+      --text:#e6eef8; --muted:#9fb0c8; --paper:#ffffff; --radius:14px;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    }
+    html,body {height:100%; margin:0; background:linear-gradient(180deg,#05111b, #071423); color:var(--text);}
+    .app {display:flex; flex-direction:column; height:100vh;}
+    .header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 16px; gap:12px;
+      backdrop-filter: blur(6px); background: rgba(255,255,255,0.02);
+      border-bottom:1px solid rgba(255,255,255,0.03);
+    }
+    .brand {display:flex; gap:12px; align-items:center}
+    .logo {
+      width:44px; height:44px; border-radius:10px;
+      background: linear-gradient(135deg,var(--accent1),var(--accent2));
+      display:flex; align-items:center; justify-content:center; font-weight:700; color:#fff;
+      box-shadow: 0 6px 18px rgba(42,128,255,0.12);
+    }
+    .title {font-weight:700; font-size:16px}
+    .status {font-size:13px; color:var(--muted)}
 
-/* ----------- HEADER ---------- */
-.header {
-  width: 100%;
-  padding: 12px 20px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: rgba(255,255,255,0.06);
-  backdrop-filter: blur(16px);
-  border-bottom: 1px solid var(--border);
-}
+    /* Toolbar (ribbon hybrid) */
+    .toolbar {display:flex; gap:8px; padding:12px 16px; flex-wrap:wrap; align-items:center; border-bottom:1px solid rgba(255,255,255,0.02)}
+    .seg {display:flex; gap:8px; align-items:center;}
+    button, select, input[type="file"] {background:#0b1220; color:var(--text); border:1px solid rgba(255,255,255,0.04); padding:8px 10px; border-radius:10px; cursor:pointer; font-size:14px}
+    button.primary {background:linear-gradient(90deg,var(--accent1),var(--accent2)); color:#001; font-weight:700; box-shadow: 0 8px 18px rgba(154,107,255,0.12)}
+    .small {padding:6px 8px; font-size:13px}
+    .flex-spacer {flex:1}
 
-.logo {
-  font-size: 22px;
-  font-weight: 700;
-  background: linear-gradient(90deg, var(--accent1), var(--accent2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
+    /* Editor area */
+    .editor-wrap {flex:1; overflow:auto; padding:18px; display:flex; justify-content:center}
+    .paper {
+      width:794px; /* typical A4 px @96dpi ~ 794 x 1123 */
+      min-height:1123px;
+      background:var(--paper); color:#111;
+      border-radius:8px; padding:40px; box-shadow: 0 20px 50px rgba(2,6,23,0.6);
+      box-sizing:border-box; margin-bottom:40px;
+    }
+    /* mobile */
+    @media (max-width:920px){
+      .paper {width:92%}
+      .toolbar {padding:10px}
+      .logo {width:36px;height:36px}
+    }
 
-/* ----------- TOOLBAR (Ribbon) ---------- */
-.toolbar {
-  background: var(--card);
-  padding: 12px;
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-  border-bottom: 1px solid var(--border);
-}
-
-.toolbar button, select {
-  padding: 8px 12px;
-  border-radius: var(--radius);
-  border: 1px solid var(--border);
-  background: #1d222a;
-  color: var(--text);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.toolbar button:hover, select:hover {
-  background: #252b34;
-}
-
-/* ----------- EDITOR AREA ---------- */
-.editor-container {
-  flex: 1;
-  overflow-y: auto;
-  padding: 20px;
-}
-
-.paper {
-  background: var(--paper);
-  width: 90%;
-  max-width: 900px;
-  min-height: 1200px;
-  margin: auto;
-  padding: 40px;
-  border-radius: 8px;
-  color: #000;
-  box-shadow: 0 0 20px rgba(0,0,0,0.3);
-}
-
-/* Mobile */
-@media (max-width: 600px) {
-  .paper {
-    width: 100%;
-    padding: 20px;
-  }
-}
-</style>
+    /* contenteditable default styling */
+    #paper[contenteditable="true"] {outline:none; white-space:pre-wrap; word-break:break-word; font-size:16px; line-height:1.6; font-family: 'Inter', sans-serif; color:#0b1720}
+    .hint {color:var(--muted); font-size:13px; margin-bottom:12px}
+    .controls {display:flex; gap:8px; align-items:center}
+    .notice {font-size:13px; color:var(--muted)}
+  </style>
 </head>
-
 <body>
+  <div class="app">
+    <div class="header">
+      <div class="brand">
+        <div class="logo">X</div>
+        <div>
+          <div class="title">Xizoa Docs — Premium</div>
+          <div class="status" id="status">Ready</div>
+        </div>
+      </div>
 
-<!-- HEADER -->
-<div class="header">
-  <div class="logo">Xizoa Docs</div>
-  <div style="opacity:0.7;font-size:14px;">Saved • Ready</div>
-</div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <div class="notice" id="autosaveStatus">Autosave: Off</div>
+        <button class="small" id="loadDraftBtn">Load Draft</button>
+        <button class="small" id="clearDraftBtn">Clear Draft</button>
+      </div>
+    </div>
 
-<!-- TOOLBAR -->
-<div class="toolbar">
-  <button onclick="cmd('bold')"><b>B</b></button>
-  <button onclick="cmd('italic')"><i>I</i></button>
-  <button onclick="cmd('underline')"><u>U</u></button>
+    <!-- Ribbon toolbar -->
+    <div class="toolbar" role="toolbar" aria-label="Editor toolbar">
+      <div class="seg">
+        <button onclick="exec('bold')" title="Bold"><b>B</b></button>
+        <button onclick="exec('italic')" title="Italic"><i>I</i></button>
+        <button onclick="exec('underline')" title="Underline"><u>U</u></button>
+      </div>
 
-  <select onchange="cmdValue('fontSize', this.value)">
-    <option value="3">12px</option>
-    <option value="4">14px</option>
-    <option value="5">18px</option>
-    <option value="6">24px</option>
-  </select>
+      <div class="seg">
+        <select id="fontSize" onchange="exec('fontSize', this.value)">
+          <option value="3">12px</option>
+          <option value="4" selected>14px</option>
+          <option value="5">18px</option>
+          <option value="6">24px</option>
+        </select>
 
-  <button onclick="cmd('justifyLeft')">Left</button>
-  <button onclick="cmd('justifyCenter')">Center</button>
-  <button onclick="cmd('justifyRight')">Right</button>
+        <button onclick="exec('justifyLeft')">Left</button>
+        <button onclick="exec('justifyCenter')">Center</button>
+        <button onclick="exec('justifyRight')">Right</button>
+      </div>
 
-  <button onclick="insertImage()">📷 Image</button>
-  <button onclick="exportPDF()">📄 Export PDF</button>
-</div>
+      <div class="seg">
+        <button onclick="insertImagePrompt()">Insert Image</button>
+        <input type="file" id="imgFile" accept="image/*" style="display:none" />
+      </div>
 
-<!-- EDITOR -->
-<div class="editor-container">
-  <div id="paper" class="paper" contenteditable="true">
-    Start writing here...
+      <div class="flex-spacer"></div>
+
+      <div class="seg">
+        <button id="saveBtn" onclick="saveDraft()">Save Draft</button>
+        <button class="primary" id="exportBtn" onclick="exportPDF()">Export PDF</button>
+      </div>
+    </div>
+
+    <div class="editor-wrap">
+      <div id="paper" class="paper" contenteditable="true" spellcheck="true" aria-label="Document editor">
+        <div class="hint">Tip: Click here and start typing. Use toolbar for formatting. Use Save Draft or Export PDF.</div>
+        <h1>Title</h1>
+        <p>Start writing...</p>
+      </div>
+    </div>
   </div>
-</div>
 
 <script>
-function cmd(action) {
-  document.execCommand(action, false, null);
+/* --------------- Utilities & features --------------- */
+
+/* Exec wrapper for document.execCommand (still works for most simple formatting) */
+function exec(cmd, value=null){
+  document.execCommand(cmd, false, value);
+  paperChanged();
 }
 
-function cmdValue(action, value) {
-  document.execCommand(action, false, value);
+/* Simple debounce */
+function debounce(fn, wait){
+  let t;
+  return function(...a){ clearTimeout(t); t = setTimeout(()=> fn.apply(this,a), wait); };
 }
 
-function insertImage() {
-  const url = prompt("Enter Image URL:");
-  if (url) document.execCommand("insertImage", false, url);
+/* DOM refs */
+const paper = document.getElementById('paper');
+const status = document.getElementById('status');
+const autosaveStatus = document.getElementById('autosaveStatus');
+const saveBtn = document.getElementById('saveBtn');
+const loadDraftBtn = document.getElementById('loadDraftBtn');
+const clearDraftBtn = document.getElementById('clearDraftBtn');
+const imgFile = document.getElementById('imgFile');
+
+const DRAFT_KEY = 'xizoa_draft_v1';
+
+/* ---------- Save Draft (localStorage) ---------- */
+function saveDraft(){
+  const content = paper.innerHTML;
+  localStorage.setItem(DRAFT_KEY, content);
+  status.textContent = 'Draft saved';
+  flashStatus();
 }
 
-function exportPDF() {
-  alert("PDF Export logic add kar dena — UI ready hai.");
+function loadDraft(){
+  const content = localStorage.getItem(DRAFT_KEY);
+  if(content){
+    paper.innerHTML = content;
+    status.textContent = 'Draft loaded';
+  } else {
+    status.textContent = 'No draft found';
+  }
+  flashStatus();
 }
+
+function clearDraft(){
+  localStorage.removeItem(DRAFT_KEY);
+  status.textContent = 'Draft cleared';
+  flashStatus();
+}
+
+/* Autosave: debounce on input */
+const autosave = debounce(()=> {
+  localStorage.setItem(DRAFT_KEY, paper.innerHTML);
+  autosaveStatus.textContent = 'Autosave: Saved';
+  setTimeout(()=> autosaveStatus.textContent = 'Autosave: On', 1200);
+}, 1600);
+
+function paperChanged(){
+  autosave();
+  status.textContent = 'Editing...';
+}
+
+/* Flash status text briefly */
+function flashStatus(){ setTimeout(()=> status.textContent = 'Ready', 1200); }
+
+/* Attach events */
+paper.addEventListener('input', paperChanged);
+loadDraftBtn.addEventListener('click', loadDraft);
+clearDraftBtn.addEventListener('click', clearDraft);
+
+/* load draft on start if present */
+if(localStorage.getItem(DRAFT_KEY)){
+  autosaveStatus.textContent = 'Autosave: On (draft exists)';
+} else {
+  autosaveStatus.textContent = 'Autosave: On';
+}
+
+/* -------- Image insertion - URL prompt & local file support -------- */
+function insertImagePrompt(){
+  const url = prompt('Paste image URL OR press Cancel to upload file from device:');
+  if(url && url.trim()){
+    insertImageURL(url.trim());
+    return;
+  }
+  // trigger file input
+  imgFile.click();
+}
+
+imgFile.addEventListener('change', async (e) => {
+  const f = e.target.files[0];
+  if(!f) return;
+  const reader = new FileReader();
+  reader.onload = function(ev){
+    insertImageURL(ev.target.result);
+  };
+  reader.readAsDataURL(f);
+  imgFile.value = '';
+});
+
+function insertImageURL(url){
+  // insert responsive image with max-width
+  const imgHtml = `<div style="text-align:center"><img src="${url}" style="max-width:100%;height:auto;border-radius:6px;margin:10px 0"/></div><div contenteditable="false"></div>`;
+  // use range insert
+  pasteHtmlAtCaret(imgHtml);
+  paperChanged();
+}
+
+/* helper to paste html at caret in contenteditable */
+function pasteHtmlAtCaret(html) {
+  let sel, range;
+  if (window.getSelection) {
+      sel = window.getSelection();
+      if (sel.getRangeAt && sel.rangeCount) {
+          range = sel.getRangeAt(0);
+          range.deleteContents();
+          const el = document.createElement("div");
+          el.innerHTML = html;
+          const frag = document.createDocumentFragment(), node = el.firstChild;
+          let lastNode = frag;
+          while (el.firstChild) {
+              frag.appendChild(el.firstChild);
+          }
+          range.insertNode(frag);
+          // move caret after inserted node
+          range.setStartAfter(range.endContainer);
+          range.collapse(true);
+          sel.removeAllRanges();
+          sel.addRange(range);
+      }
+  }
+}
+
+/* -------------- Export to PDF (html2pdf) -------------- */
+async function exportPDF(){
+  // ask filename
+  const suggested = (document.querySelector('#paper h1')?.innerText || 'document').trim() || 'document';
+  let filename = prompt('Enter filename for PDF', suggested + '.pdf');
+  if(filename === null) return; // user cancelled
+  filename = filename.endsWith('.pdf') ? filename : filename + '.pdf';
+
+  // show status
+  status.textContent = 'Preparing PDF...';
+
+  // Clone the paper node to adjust styles for print without affecting live editor
+  const clone = paper.cloneNode(true);
+
+  // Optional: remove UI-only hints or editable attributes in clone
+  clone.querySelectorAll('.hint').forEach(n=> n.remove());
+  clone.setAttribute('contenteditable', 'false');
+
+  // Apply print-friendly width (A4) and background white
+  clone.style.width = '794px';
+  clone.style.minHeight = '1123px';
+  clone.style.padding = '40px';
+  clone.style.boxShadow = 'none';
+  clone.style.margin = '0';
+
+  // Container to isolate clone
+  const container = document.createElement('div');
+  container.style.padding = '20px';
+  container.style.background = '#ffffff';
+  container.appendChild(clone);
+
+  // html2pdf options - tweak for quality
+  const opt = {
+    margin:       [10, 10, 10, 10],
+    filename:     filename,
+    image:        { type: 'jpeg', quality: 0.98 },
+    html2canvas:  { scale: 2, useCORS: true, logging: false, allowTaint: true },
+    jsPDF:        { unit: 'pt', format: 'a4', orientation: 'portrait' }
+  };
+
+  // trigger download
+  try {
+    await html2pdf().set(opt).from(container).save();
+    status.textContent = 'PDF exported';
+  } catch (err) {
+    console.error(err);
+    status.textContent = 'Export failed';
+    alert('PDF export failed. Try desktop browser or allow cross-origin images.');
+  } finally {
+    setTimeout(()=> status.textContent = 'Ready', 1500);
+  }
+}
+
+/* -------------- Keyboard shortcuts -------------- */
+document.addEventListener('keydown', function(e){
+  if((e.ctrlKey || e.metaKey) && e.key === 's'){
+    e.preventDefault(); saveDraft();
+  }
+  if((e.ctrlKey || e.metaKey) && e.key === 'b'){
+    e.preventDefault(); exec('bold');
+  }
+});
 </script>
-
 </body>
 </html>
